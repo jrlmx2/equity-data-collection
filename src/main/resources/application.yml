@@ -1,0 +1,47 @@
+logging:
+  path: logs/portfolio-manager.log
+  pattern:
+    console: "%d{dd-MM-yyyy HH:mm:ss.SSS} %magenta([%thread]) %highlight(%-5level) %logger.%M - %msg%n"
+  level:
+    com.rawstocktechnologies.portfoliomanager: DEBUG
+
+spring:
+  datasource:
+
+    driver-class-name: org.postgresql.Driver
+  flyway:
+    baseline-on-migrate: true
+
+server:
+  port: 9999
+  ssl.key-store: keystore.p12
+  ssl.key-store-password: football42
+  ssl.keyStoreType: PKCS12
+  ssl.keyAlias: tomcat
+
+datasource:
+  iex:
+    secret: sk_6e802c2c8ee146429e7bfc29cc1c0f37
+    token: pk_f324e4df9f0f465894c49daf32ff48b2
+    scheme: https
+    host: cloud.iexapis.com
+    version: stable
+  ally:
+    secret: AULAeSuxNk8NYOd6Bzhfoqar8qhoyfMtMKYMvdGnzqM1
+    key: u4AaXYZmPH2DEFCggf2xuGUVljnP3Oc0sF5kNmhfAPU4
+    token: c94ixfJhI8xKMQ8SNEzgNN1tNv4YZPAk58UTIa7fBmw0
+    token-secret: 0XIPZpZdBzVGrMfPeNnQqdaiFJgor3Ho2QX6IdZAn2M4
+    scheme: https
+    host: api.tradeking.com
+    version: v1
+  ameritrade:
+    redirect_uri: https://localhost:9999/ameritrade/auth
+    client_id: MC86RVSSD8DQ
+    base: api.tdameritrade.com
+    version: v1
+    scheme: https
+
+
+filter:
+  marketCapMinimum: 800000000
+
