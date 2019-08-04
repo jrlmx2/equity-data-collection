@@ -1,0 +1,1 @@
+alter table equity_momentum add constraint unq_strategy_symbol unique (symbol, strategy);

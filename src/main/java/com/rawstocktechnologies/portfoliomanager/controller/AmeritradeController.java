@@ -1,13 +1,12 @@
 package com.rawstocktechnologies.portfoliomanager.controller;
 
-import com.rawstocktechnologies.portfoliomanager.components.AmeritradeAuth;
-import com.rawstocktechnologies.portfoliomanager.components.AmeritradeCredentials;
-import com.rawstocktechnologies.portfoliomanager.components.AmeritradeDataCollection;
-import com.rawstocktechnologies.portfoliomanager.components.IEXDataCollection;
+import com.rawstocktechnologies.portfoliomanager.components.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.task.TaskExecutor;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -30,15 +29,32 @@ public class AmeritradeController {
     @Autowired
     AmeritradeDataCollection data;
 
-    private RestTemplate rest = new RestTemplate();
+    @Autowired
+    Momentum momentum;
+
+    @Autowired
+    ThreadPoolTaskExecutor threading;
+
+
+        private RestTemplate rest = new RestTemplate();
 
     @GetMapping(path="/auth")
     @CrossOrigin
-    public String getToken(HttpServletRequest request, HttpServletResponse response){
+    public String getToken(HttpServletRequest request, HttpServletResponse response) throws IOException{
         LOGGER.info("request uri {} ",request.getRequestURL());
         if(StringUtils.isNotBlank(request.getParameter("code"))){
             auth.establishCredentials(request.getParameter("code"));
-            data.collectAmeritradeData();
+            threading.execute(new Runnable() {
+                @Override
+                public void run() {
+                    data.collectAmeritradeData();
+                    try {
+                        momentum.updateMomentum();
+                    } catch (IOException ioe) {
+                        LOGGER.error("Failed to run the momentum scoring system {}", ioe);
+                    }
+                }
+            });
             return "<h1>Success<h1/>";
         }
 

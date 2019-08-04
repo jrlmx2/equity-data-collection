@@ -49,7 +49,8 @@ public class AmeritradeDataCollection {
         LOGGER.info("Running once on startup with ameritrade host {}");
     }
 
-    @Scheduled(cron="0 0 1 28 FEB,MAY,AUG,DEC *")
+    @Scheduled(cron="0 0 4 * * *")
+    //@Scheduled(cron="0 0 1 28 FEB,MAY,AUG,DEC *")
     public void collectAmeritradeData() {
 
         // TODO fix fundamental unmarshalling.
@@ -78,7 +79,7 @@ public class AmeritradeDataCollection {
                     String fundamentals = StreamUtils.copyToString(con.getInputStream(), StandardCharsets.UTF_8);
                     HashMap<String, AmeritradeInstrament> funds = mapper.readValue(fundamentals, typeRef);
                     con.disconnect();
-                    if (funds.get(symbol).getFundamental().getMarketCap() > marketCapMinLimit) {
+                    if (funds.containsKey(symbol)) {
                         LOGGER.info("Found potential symbol {}", symbol);
 
                         EquityData data = new EquityData();
@@ -88,7 +89,7 @@ public class AmeritradeDataCollection {
                         id.setDataSourceVersion(auth.getVersion());
                         data.setEquity(id);
 
-                        Range range = getRange(12);
+                        Range range = getRange(36);
                         URIBuilder chartUrlBuilder =  auth.buildUrl(new String[]{"marketdata",symbol,"pricehistory"})
                                 .addParameter("periodType","month")
                                 .addParameter("frequencyType","daily")
@@ -111,6 +112,7 @@ public class AmeritradeDataCollection {
                         data.setChart(StreamUtils.copyToString(conn.getInputStream(), StandardCharsets.UTF_8));
                         conn.disconnect();
 
+                        data.setStats(mapper.writeValueAsString(funds.get(symbol).getFundamental()));
                         data.setUrl(chartUrlBuilder.toString());
                         data.setStats(JacksonUtils.mapper.writeValueAsString(funds.get(symbol).getFundamental()));
                         equityData.save(data);
@@ -139,7 +141,7 @@ public class AmeritradeDataCollection {
         LocalDateTime now = LocalDate.now().plusDays(1).atStartOfDay().minusNanos(1);
 
         int currentMonth = now.getMonthValue();
-        while(currentMonth -1 != now.getMonthValue()){
+        while(currentMonth != now.getMonthValue()){
             now = now.minusDays(1);
         }
 

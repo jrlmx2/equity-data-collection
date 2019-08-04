@@ -45,5 +45,5 @@ datasource:
 
 
 filter:
-  marketCapMinimum: 800000000
+  marketCapMinimum: 3000000000
 
