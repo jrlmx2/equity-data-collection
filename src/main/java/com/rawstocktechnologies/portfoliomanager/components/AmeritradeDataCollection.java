@@ -36,6 +36,9 @@ public class AmeritradeDataCollection {
     @Value("${filter.marketCapMinimum}")
     private long marketCapMinimum;
 
+    private static final TypeReference<HashMap<String, AmeritradeInstrament>> typeRef
+            = new TypeReference<HashMap<String, AmeritradeInstrament>>() {};
+
     @Autowired
     private AmeritradeAuth auth;
 
@@ -58,8 +61,6 @@ public class AmeritradeDataCollection {
         long marketCapMinLimit = marketCapMinimum / 1000000;
         int symbolCount = 0;
         int iterationCount = 0;
-        TypeReference<HashMap<String, AmeritradeInstrament>> typeRef
-                = new TypeReference<HashMap<String, AmeritradeInstrament>>() {};
         for(String symbol : EquityUtils.symbols) {
             try {
                 if(iterationCount % 5 == 0 || iterationCount == 0)
@@ -128,6 +129,19 @@ public class AmeritradeDataCollection {
             }
         }
         LOGGER.info("Found {} investigatable symbols", symbolCount);
+    }
+
+    public String getChart(String symbol, Integer months) {
+        Range range = getRange(months);
+        URIBuilder chartUrlBuilder =  auth.buildUrl(new String[]{"marketdata",symbol,"pricehistory"})
+                .addParameter("periodType","month")
+                .addParameter("frequencyType","daily")
+                .addParameter("frequency","1")
+                .addParameter("startDate",Long.toString(range.getStart()))
+                .addParameter("endDate",Long.toString(range.getEnd()))
+                .addParameter("needExtendedHoursData","false");
+
+        return auth.executeRequest(chartUrlBuilder.toString(),"GET");
     }
 
     @Data

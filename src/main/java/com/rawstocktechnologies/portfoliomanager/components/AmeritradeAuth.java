@@ -12,6 +12,7 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.DataOutputStream;
@@ -66,6 +67,39 @@ public class AmeritradeAuth {
             con.disconnect();
         }
     };
+
+    public String executeRequest(String uri, String method){
+        HttpURLConnection conn = null;
+        String results = null;
+
+        LOGGER.info("Running request {} {}",method, uri);
+        try {
+
+            conn = buildRequest("GET", uri);
+            if (conn.getResponseCode() == 429) {
+                Thread.sleep(60000);
+                conn.disconnect();
+                results = executeRequest(uri, method);
+            }
+            if (conn.getResponseCode() == 401) {
+                establishCredentials(null);
+                conn.disconnect();
+                results = executeRequest(uri, method);
+            }
+
+            results = StreamUtils.copyToString(conn.getInputStream(), StandardCharsets.UTF_8);
+        } catch (IOException | InterruptedException e) {
+            LOGGER.error("Error getting symbol data with ", e);
+        } finally {
+            if (conn != null) {
+                conn.disconnect();
+            }
+        }
+
+        LOGGER.info("Returning results {}", results);
+        return results;
+
+    }
 
     // TODO fix token refresh, it doesn't work when unauthorizerd
     public void establishCredentials(String code){
