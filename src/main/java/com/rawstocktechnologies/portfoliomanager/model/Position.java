@@ -10,9 +10,9 @@ import java.time.LocalDateTime;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-@Entity
+//@Entity
 @Data
-@Table(name="positions")
+//@Table(name="positions")
 public class Position {
     @Id
     private String id;

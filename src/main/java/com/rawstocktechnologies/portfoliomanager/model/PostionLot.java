@@ -7,9 +7,9 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Entity
+//@Entity
 @Data
-@Table(name="position_lots")
+//@Table(name="position_lots")
 public class PostionLot {
     @Id
     private String id;

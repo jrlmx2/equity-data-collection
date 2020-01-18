@@ -1,9 +1,10 @@
 package com.rawstocktechnologies.portfoliomanager.components;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rawstocktechnologies.portfoliomanager.model.DataIdentifier;
+import com.rawstocktechnologies.portfoliomanager.model.DataSource;
 import com.rawstocktechnologies.portfoliomanager.utils.JacksonUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpConnection;
 import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +48,15 @@ public class AmeritradeAuth {
 
     private ObjectMapper mapper = JacksonUtils.mapper;
     private RestTemplate rest = new RestTemplate();
+
+    public DataIdentifier getID(String symbol){
+        DataIdentifier id = new DataIdentifier();
+        id.setDataSource(DataSource.AMERITRADE);
+        id.setDataSourceVersion(version);
+        id.setSymbol(symbol);
+
+        return id;
+    }
 
     @Scheduled(cron="0 30 * * * *")
     public void testAccessToken(){

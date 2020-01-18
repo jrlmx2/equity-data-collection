@@ -10,9 +10,28 @@ spring:
     url: jdbc:postgresql://localhost:5432/postgres
     driver-class-name: org.postgresql.Driver
     username: postgres
-    password: mysecretpassword
+    password: test
+  thymeleaf:
+    cache: false
   flyway:
     baseline-on-migrate: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: jrlmx2@gmail.com
+    password: ${PERSONAL_SMTP_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+          starttls:
+            enable: true
+
+mail:
+  destination: jrlmx2@gmail.com
 
 server:
   port: 9999
@@ -47,3 +66,6 @@ datasource:
 filter:
   marketCapMinimum: 3000000000
 
+biotech:
+  lookback: 14
+  percentageThreshold: 25

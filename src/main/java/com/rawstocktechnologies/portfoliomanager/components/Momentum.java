@@ -1,6 +1,5 @@
 package com.rawstocktechnologies.portfoliomanager.components;
 
-import com.rawstocktechnologies.portfoliomanager.dao.StrategyRepository;
 import com.rawstocktechnologies.portfoliomanager.model.strategy.Strategy;
 import com.rawstocktechnologies.portfoliomanager.utils.ProcessUtils;
 import org.slf4j.Logger;
@@ -15,8 +14,8 @@ import java.io.IOException;
 public class Momentum {
     private static final Logger LOGGER = LoggerFactory.getLogger(Momentum.class);
 
-    @Autowired
-    private StrategyRepository strateiges;
+    /*@Autowired
+    private StrategyRepository strateiges;*/
 
     @Scheduled(cron="0 0 7 1 MAR,JUN,SEP,DEC *")
     public void updateMomentum() throws IOException {
@@ -32,7 +31,7 @@ public class Momentum {
                 ProcessUtils.processCommand("momentum", "c:\\\\work\\trading\\portfoliomanager\\src\\main\\resources\\bin\\rust-portfolio.exe", LOGGER);
             }
 
-            Strategy strategy = strateiges.findByName("Quantitative Momentum");
+            Strategy strategy = null; //strateiges.findByName("Quantitative Momentum");
 
 
         } catch (Exception ex) {

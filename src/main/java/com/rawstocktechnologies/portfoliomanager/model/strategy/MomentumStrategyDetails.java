@@ -24,13 +24,11 @@ public class MomentumStrategyDetails implements StrategyDetails {
     // Ratio weight for momentum to fip
     private BigDecimal weightRatio = new BigDecimal(0.5);
 
-    @Override
     public boolean close(Position position) {
 
         return false;
     }
 
-    @Override
     public boolean open() {
         return false;
     }

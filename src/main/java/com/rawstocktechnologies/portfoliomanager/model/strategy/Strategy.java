@@ -13,12 +13,12 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-@Entity
+//@Entity
 @Data
-@Table(name="strategies")
-@TypeDefs({
+//@Table(name="strategies")
+/*@TypeDefs({
         @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
-})
+})*/
 public class Strategy {
 
     @Id

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head></head>
+<body>
+<h3 th:text="${date}"></h3>
+<ul>
+    <li th:each="idea: ${ideas}">
+        <div width="40%; display:inline-block; text-align:right;">
+            <a th:href="https://ycharts.com/companies/${opp.symbol}" th:text="${idea.symbol}"></a>
+        </div>
+        <span style="color:#CC3333" th:text="${idea.change}%"></span>
+    </li>
+</ul>
+</body>
+</html>

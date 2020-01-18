@@ -1,8 +1,6 @@
-package com.rawstocktechnologies.portfoliomanager.model;
+package com.rawstocktechnologies.portfoliomanager.model.iex;
 
 import lombok.Data;
-
-import java.time.LocalDate;
 
 @Data
 public class IEXSymbolRecord {

@@ -9,8 +9,8 @@ import java.io.IOException;
 public class ProcessUtils {
 
     public static void processCommand(String out, String cmd, Logger logger) throws IOException, InterruptedException {
-        @Cleanup FileOutputStream fosLog;
-        @Cleanup FileOutputStream fosError;
+        FileOutputStream fosLog = null;
+        FileOutputStream fosError = null;
         try {
             fosLog = new FileOutputStream(out+"log");
             fosError = new FileOutputStream(out+"Error");
@@ -34,6 +34,21 @@ public class ProcessUtils {
         } catch (Throwable t) {
             t.printStackTrace();
             throw t;
+        }finally{
+            if(fosLog != null){
+                try{
+                    fosLog.close();
+                }catch (Exception ex){
+                    ex.printStackTrace();
+                }
+            }
+            if(fosError != null){
+                try {
+                    fosError.close();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
         }
     }
 

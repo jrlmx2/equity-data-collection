@@ -1,9 +1,6 @@
 package com.rawstocktechnologies.portfoliomanager.controller;
 
-import com.rawstocktechnologies.portfoliomanager.components.AmeritradeAuth;
-import com.rawstocktechnologies.portfoliomanager.components.AmeritradeDataCollection;
-import com.rawstocktechnologies.portfoliomanager.components.IEXDataCollection;
-import com.rawstocktechnologies.portfoliomanager.components.Momentum;
+import com.rawstocktechnologies.portfoliomanager.components.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +32,12 @@ public class AmeritradeAuthController {
     @Autowired
     ThreadPoolTaskExecutor threading;
 
+    @Autowired
+    BiotechsThatPuked btp;
+
+    @Autowired
+    IEXDataCollection iex;
+
     @GetMapping(path="/auth")
     @CrossOrigin
     public void getToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -44,7 +47,11 @@ public class AmeritradeAuthController {
                 @Override
                 public void run() {
                     try {
+                        iex.updateSymbolList();
+                        data.collectAmeritradeData();
+                        btp.findBiotectsThatPuked();
                         momentum.updateMomentum();
+
                     } catch (IOException ioe) {
                         LOGGER.error("Failed to run the momentum scoring system {}", ioe);
                     }

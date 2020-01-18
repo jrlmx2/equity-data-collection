@@ -3,11 +3,14 @@ package com.rawstocktechnologies.portfoliomanager.components;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rawstocktechnologies.portfoliomanager.dao.EquityDataRepository;
-import com.rawstocktechnologies.portfoliomanager.model.*;
-import com.rawstocktechnologies.portfoliomanager.utils.EquityUtils;
+import com.rawstocktechnologies.portfoliomanager.dao.IEXSymbolCompanyRepository;
+import com.rawstocktechnologies.portfoliomanager.model.DataIdentifier;
+import com.rawstocktechnologies.portfoliomanager.model.DataSource;
+import com.rawstocktechnologies.portfoliomanager.model.EquityData;
+import com.rawstocktechnologies.portfoliomanager.model.ameritrade.AmeritradeInstrament;
+import com.rawstocktechnologies.portfoliomanager.model.iex.IEXSymbolCompany;
 import com.rawstocktechnologies.portfoliomanager.utils.JacksonUtils;
 import lombok.Data;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,18 +19,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StreamUtils;
-import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.math.BigInteger;
 import java.net.HttpURLConnection;
+import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.Map;
 
 @Component
 public class AmeritradeDataCollection {
@@ -45,6 +45,9 @@ public class AmeritradeDataCollection {
     @Autowired
     private EquityDataRepository equityData;
 
+    @Autowired
+    private IEXSymbolCompanyRepository iexSymbolCompanyRepository;
+
     private ObjectMapper mapper = JacksonUtils.mapper;
 
     @PostConstruct
@@ -61,7 +64,8 @@ public class AmeritradeDataCollection {
         long marketCapMinLimit = marketCapMinimum / 1000000;
         int symbolCount = 0;
         int iterationCount = 0;
-        for(String symbol : EquityUtils.symbols) {
+        for(IEXSymbolCompany company : iexSymbolCompanyRepository.findAll()) {
+            String symbol = company.getSymbol();
             try {
                 if(iterationCount % 5 == 0 || iterationCount == 0)
                     auth.establishCredentials(null);

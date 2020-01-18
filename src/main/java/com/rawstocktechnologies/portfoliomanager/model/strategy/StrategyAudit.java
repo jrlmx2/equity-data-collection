@@ -6,9 +6,9 @@ import lombok.Data;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Entity
+//@Entity
 @Data
-@Table(name="stategies_audit")
+//@Table(name="stategies_audit")
 public class StrategyAudit {
 
     @Id
@@ -24,7 +24,7 @@ public class StrategyAudit {
     @Column(name="name_before")
     private String nameBefore;
 
-    @Column(name="name_after")
+    @Column(name="name_after", insertable=false, updatable=false)
     private String nameAfter;
 
     @Column(name="strategy_before")

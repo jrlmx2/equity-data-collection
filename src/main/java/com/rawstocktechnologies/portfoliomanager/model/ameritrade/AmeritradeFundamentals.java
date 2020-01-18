@@ -1,4 +1,4 @@
-package com.rawstocktechnologies.portfoliomanager.model;
+package com.rawstocktechnologies.portfoliomanager.model.ameritrade;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;

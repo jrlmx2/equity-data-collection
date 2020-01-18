@@ -2,10 +2,6 @@ package com.rawstocktechnologies.portfoliomanager.components;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rawstocktechnologies.portfoliomanager.dao.EquityDataRepository;
-import com.rawstocktechnologies.portfoliomanager.model.DataIdentifier;
-import com.rawstocktechnologies.portfoliomanager.model.DataSource;
-import com.rawstocktechnologies.portfoliomanager.model.EquityData;
-import com.rawstocktechnologies.portfoliomanager.model.IEXSymbolRecord;
 import com.rawstocktechnologies.portfoliomanager.utils.JacksonUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.utils.URIBuilder;
@@ -14,11 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
-import java.io.IOException;
-import java.math.BigInteger;
 
 @Component
 public class AllyDataCollection {
