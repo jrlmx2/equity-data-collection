@@ -22,6 +22,7 @@ import org.springframework.web.client.RestTemplate;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,7 +57,7 @@ public class IEXDataCollection {
 
     public IEXSymbolCompany getCompanyForSymbol(String symbol){
         try {
-            return rest.getForEntity(buildIEXUrl("stock", symbol, "company"), IEXSymbolCompany.class).getBody();
+            return rest.getForEntity(buildIEXUrl("stock", URLEncoder.encode(symbol, "UTF-8"), "company"), IEXSymbolCompany.class).getBody();
         } catch (Exception ex) {
             LOGGER.error("failed to get IEX Comapny data for symbol",ex);
             return null;
@@ -64,7 +65,7 @@ public class IEXDataCollection {
     }
 
     @PostConstruct
-    public void init() {
+    public void init() throws Exception {
         LOGGER.info("Running once on startup with iex host {}",iexHost);
         //collectIEXData();
     }
@@ -90,7 +91,21 @@ public class IEXDataCollection {
             }
 
             for(String symbol : symbolsStrings){
-                symbolRepo.save(getCompanyForSymbol(symbol));
+                if(StringUtils.isBlank(symbol))
+                    continue;
+
+                IEXSymbolCompany company = null;
+                try {
+                    company = getCompanyForSymbol(symbol);
+                } catch (Exception ex) {
+                    LOGGER.error("Failed to update company information for "+symbol,ex);
+                    continue;
+                }
+
+                if(company == null)
+                    continue;
+
+                symbolRepo.save(company);
             }
 
         } catch (Exception ex){

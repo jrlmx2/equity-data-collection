@@ -1,15 +1,15 @@
 create table iex_symbols (
-    symbol primary key text,
-    companyName text,
+    symbol text primary key,
+    company_name text,
     exchange text,
     industry text,
     website text,
     description text,
     CEO text,
-    securityName text,
-    issueType text,
+    security_name text,
+    issue_type text,
     sector text,
-    primarySicCode integer,
+    primary_sic_code integer,
     employees integer,
     tags text[],
     address text,
@@ -18,5 +18,10 @@ create table iex_symbols (
     city text,
     zip text,
     country text,
-    phone text
-)
+    phone text,
+    updated_at timestamp
+);
+
+CREATE TRIGGER update_iex_symbol_change_timestamp BEFORE UPDATE
+    ON iex_symbols FOR EACH ROW EXECUTE PROCEDURE
+    update_changetimestamp_column();

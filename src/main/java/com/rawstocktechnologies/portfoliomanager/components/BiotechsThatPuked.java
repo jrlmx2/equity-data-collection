@@ -132,21 +132,23 @@ public class BiotechsThatPuked {
                 }
 
             }
-            // Sort the ideas by change, then alphabetically
-            Collections.sort(ideas, compareBiotechIdeas);
+            if(ideas.size() > 0) { // Only send the email if we found something worth showing
+                // Sort the ideas by change, then alphabetically
+                Collections.sort(ideas, compareBiotechIdeas);
 
-            // Thymeleaf
-            Map<String,Object> variables = new HashMap<>();
-            variables.put("date", emailDateFormatter.format(new Date()));
-            variables.put("ideas", ideas);
+                // Thymeleaf
+                Map<String, Object> variables = new HashMap<>();
+                variables.put("date", emailDateFormatter.format(new Date()));
+                variables.put("ideas", ideas);
 
-            Resource resource = resourceLoader.getResource("classpath:biotechs-that-puked.html");
-            InputStream input = resource.getInputStream();
-            final IContext ctx = new Context(Locale.US, variables);
-            String html = templateEngine.process(StreamUtils.copyToString(input, Charset.availableCharsets().get("UTF-8")),ctx);
+                Resource resource = resourceLoader.getResource("classpath:templates/biotechs-that-puked.html");
+                InputStream input = resource.getInputStream();
+                final IContext ctx = new Context(Locale.US, variables);
+                String html = templateEngine.process(StreamUtils.copyToString(input, Charset.availableCharsets().get("UTF-8")), ctx);
 
-            // send email
-            sendEmail(toAddress, "Biotechs That Puked", html, null, true);
+                // send email
+                sendEmail(toAddress, "Biotechs That Puked", html, null, true);
+            }
         } catch (Exception ex) {
             LOGGER.error("Failed to find biotechs that puked with error ",ex);
         }

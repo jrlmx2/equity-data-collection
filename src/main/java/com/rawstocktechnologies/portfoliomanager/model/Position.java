@@ -15,6 +15,7 @@ import java.util.TreeSet;
 //@Table(name="positions")
 public class Position {
     @Id
+    @GeneratedValue
     private String id;
 
     @Column(name="created_at")
