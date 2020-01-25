@@ -68,4 +68,4 @@ filter:
 
 biotech:
   lookback: 14
-  percentageThreshold: 25
+  percentageThreshold: -20

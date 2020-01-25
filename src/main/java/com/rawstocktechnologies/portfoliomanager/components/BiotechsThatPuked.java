@@ -92,7 +92,7 @@ public class BiotechsThatPuked {
         }
     };
 
-    @Scheduled(cron = "0 0 9 * * SAT")
+    @Scheduled(cron = "0 0 9 * * TUE/THU")
     public void findBiotectsThatPuked(){
         try {
             // Collect the ideas
@@ -100,8 +100,8 @@ public class BiotechsThatPuked {
 
             DataIdentifier id = ameritradeAuth.getID("AAPL");
             for(IEXSymbolCompany company : iexSymbols.findAll()){
-                if(company == null || !org.apache.commons.lang3.StringUtils.equalsAnyIgnoreCase(company.getIndustry(),"biotechnology", "diagnostics & research") || !StringUtils.equalsIgnoreCase(company.getSector(), "healthcare")) {
-                    LOGGER.warn("Skipping company {}  Sector: {} !== Healthcare || Industry: {} !== biotechnology, diagnostics & research",company.getCompanyName(), company.getSector(), company.getIndustry());
+                if(company == null || !org.apache.commons.lang3.StringUtils.equalsAnyIgnoreCase(company.getIndustry(),"biotechnology", "Pharmaceuticals: Major", "Pharmaceuticals: Other", "Pharmaceuticals: Generic") || !StringUtils.equalsIgnoreCase(company.getSector(), "Health Technology")) {
+                    //LOGGER.warn("Skipping company {}  Sector: {} !== Healthcare || Industry: {} !== biotechnology, diagnostics & research",company.getCompanyName(), company.getSector(), company.getIndustry());
                     continue;
                 }
 
@@ -123,15 +123,22 @@ public class BiotechsThatPuked {
                 Candle startCandle = chart.getCandles().get(start);
                 Candle endCandle = chart.getCandles().get(candleSize-1);
 
-                double change = (endCandle.getClose() - startCandle.getOpen()) / startCandle.getOpen();
-                if(change <= threshold){
-                    Map<String,Object> ideaEntry = new HashMap<>();
-                    ideaEntry.put("symbol", company.getSymbol());
-                    ideaEntry.put("change", change);
-                    ideas.add(ideaEntry);
+                try {
+                    double change = (endCandle.getClose() - startCandle.getOpen()) / startCandle.getOpen();
+                    LOGGER.info("{}: {} <= {}", company.getCompanyName(), change, threshold);
+                    if (change <= threshold) {
+                        Map<String, Object> ideaEntry = new HashMap<>();
+                        ideaEntry.put("symbol", company.getSymbol());
+                        ideaEntry.put("change", change);
+                        ideas.add(ideaEntry);
+                    }
+                } catch (NullPointerException npe){
+                    LOGGER.info("found null candle on symbol: {}",company.getSymbol());
                 }
 
             }
+
+            LOGGER.info("Sending emails with {} ideas",ideas.size());
             if(ideas.size() > 0) { // Only send the email if we found something worth showing
                 // Sort the ideas by change, then alphabetically
                 Collections.sort(ideas, compareBiotechIdeas);
@@ -146,6 +153,7 @@ public class BiotechsThatPuked {
                 final IContext ctx = new Context(Locale.US, variables);
                 String html = templateEngine.process(StreamUtils.copyToString(input, Charset.availableCharsets().get("UTF-8")), ctx);
 
+                LOGGER.info("Email contents are {}",html);
                 // send email
                 sendEmail(toAddress, "Biotechs That Puked", html, null, true);
             }

@@ -4,7 +4,6 @@ import com.rawstocktechnologies.portfoliomanager.model.strategy.Strategy;
 import com.rawstocktechnologies.portfoliomanager.utils.ProcessUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -26,9 +25,9 @@ public class Momentum {
         try {
             LOGGER.info("Running Rust");
             if (isWindows) {
-                ProcessUtils.processCommand("momentum", "c:\\\\work\\trading\\portfoliomanager\\src\\main\\resources\\bin\\rust-portfolio.exe", LOGGER);
+                ProcessUtils.processCommand("momentum", "C:\\Users\\James\\Documents\\work\\repos\\equity-data-collection\\src\\main\\resources\\bin\\rust-portfolio.exe", LOGGER);
             } else {
-                ProcessUtils.processCommand("momentum", "c:\\\\work\\trading\\portfoliomanager\\src\\main\\resources\\bin\\rust-portfolio.exe", LOGGER);
+                ProcessUtils.processCommand("momentum", "C:\\Users\\James\\Documents\\work\\repos\\equity-data-collection\\src\\main\\resources\\bin\\rust-portfolio.exe", LOGGER);
             }
 
             Strategy strategy = null; //strateiges.findByName("Quantitative Momentum");

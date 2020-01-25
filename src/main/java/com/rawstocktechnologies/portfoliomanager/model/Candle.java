@@ -8,14 +8,14 @@ import java.sql.Timestamp;
 @Data
 @JsonDeserialize(using = CandleDeserialization.class)
 public class Candle {
-    private double low;
-    private double high;
-    private double open;
-    private double close;
-    private long volume;
+    private Double low;
+    private Double high;
+    private Double open;
+    private Double close;
+    private Integer volume;
     private Timestamp datetime;
 
-    public Candle(double low, double high, double open, double close, long volume, Timestamp datetime){
+    public Candle(Double low, Double high, Double open, Double close, Integer volume, Timestamp datetime){
         this.low=low;
         this.high=high;
         this.open=open;

@@ -47,8 +47,6 @@ public class AmeritradeAuthController {
                 @Override
                 public void run() {
                     try {
-                        iex.updateSymbolList();
-                        data.collectAmeritradeData();
                         btp.findBiotectsThatPuked();
                         momentum.updateMomentum();
 
